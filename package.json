@@ -1,6 +1,6 @@
 {
   "name": "neat-input",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A diff friendly cli input module. Made for usage with neat-log and ansi-diff-stream",
   "main": "index.js",
   "scripts": {
