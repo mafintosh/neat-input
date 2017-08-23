@@ -1,7 +1,7 @@
 {
-  "name": "neat-prompt",
+  "name": "neat-input",
   "version": "0.0.0",
-  "description": "A diff friendly cli prompt module. Made for usage with neat-log and ansi-diff-stream",
+  "description": "A diff friendly cli input module. Made for usage with neat-log and ansi-diff-stream",
   "main": "index.js",
   "scripts": {
     "test": "standard"
@@ -14,12 +14,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mafintosh/neat-prompt.git"
+    "url": "https://github.com/mafintosh/neat-input.git"
   },
   "author": "Mathias Buus (@mafintosh)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mafintosh/neat-prompt/issues"
+    "url": "https://github.com/mafintosh/neat-input/issues"
   },
-  "homepage": "https://github.com/mafintosh/neat-prompt"
+  "homepage": "https://github.com/mafintosh/neat-input"
 }
