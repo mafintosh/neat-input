@@ -1,0 +1,25 @@
+{
+  "name": "neat-prompt",
+  "version": "0.0.0",
+  "description": "A diff friendly cli prompt module. Made for usage with neat-log and ansi-diff-stream",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "dependencies": {
+    "keypress": "^0.2.1"
+  },
+  "devDependencies": {
+    "ansi-diff-stream": "^1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mafintosh/neat-prompt.git"
+  },
+  "author": "Mathias Buus (@mafintosh)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mafintosh/neat-prompt/issues"
+  },
+  "homepage": "https://github.com/mafintosh/neat-prompt"
+}
