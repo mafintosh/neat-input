@@ -1,56 +1,56 @@
 var events = require('events')
 var keypress = require('keypress')
 
-module.exports = prompt
+module.exports = neatInput
 
-function prompt (opts) {
+function neatInput (opts) {
   if (!opts) opts = {}
 
   var style = opts.style
   var showCursor = !!opts.showCursor
-  var prompt = new events.EventEmitter()
+  var input = new events.EventEmitter()
   var rawLine = ''
 
   if (!showCursor) hideCursor()
 
-  prompt.cursor = 0
-  prompt.line = line
-  prompt.rawLine = lineNoStyle
-  prompt.enter = onenter
-  prompt.set = set
-  prompt.destroy = destroy
+  input.cursor = 0
+  input.line = line
+  input.rawLine = lineNoStyle
+  input.enter = onenter
+  input.set = set
+  input.destroy = destroy
 
   keypress(process.stdin)
   process.stdin.setRawMode(true)
   process.stdin.resume()
   process.stdin.on('keypress', onkeypress)
 
-  return prompt
+  return input
 
   function handle (ch, key) {
     if (key && key.ctrl) {
-      if (key.name === 'c' && !prompt.emit('ctrl-c')) process.exit()
-      prompt.emit('ctrl-' + key.name)
+      if (key.name === 'c' && !input.emit('ctrl-c')) process.exit()
+      input.emit('ctrl-' + key.name)
       return true
     }
 
     switch (key && key.name) {
       case 'left':
-        prompt.cursor = Math.max(prompt.cursor - 1, 0)
+        input.cursor = Math.max(input.cursor - 1, 0)
         return true
 
       case 'right':
-        prompt.cursor = Math.min(prompt.cursor + 1, rawLine.length)
+        input.cursor = Math.min(input.cursor + 1, rawLine.length)
         return true
 
       case 'backspace':
-        rawLine = rawLine.slice(0, Math.max(prompt.cursor - 1, 0)) + rawLine.slice(prompt.cursor)
-        prompt.cursor = Math.max(prompt.cursor - 1, 0)
+        rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
+        input.cursor = Math.max(input.cursor - 1, 0)
         return true
 
       default:
         if (ch === '\t') {
-          prompt.emit('tab')
+          input.emit('tab')
           return true
         }
 
@@ -60,8 +60,8 @@ function prompt (opts) {
         }
 
         if (ch) {
-          rawLine = rawLine.slice(0, prompt.cursor) + ch + rawLine.slice(prompt.cursor)
-          prompt.cursor += ch.length
+          rawLine = rawLine.slice(0, input.cursor) + ch + rawLine.slice(input.cursor)
+          input.cursor += ch.length
           return true
         }
     }
@@ -76,9 +76,9 @@ function prompt (opts) {
   function line () {
     if (!style) return rawLine
     return style(
-      rawLine.slice(0, prompt.cursor),
-      rawLine.slice(prompt.cursor, prompt.cursor + 1),
-      rawLine.slice(prompt.cursor + 1)
+      rawLine.slice(0, input.cursor),
+      rawLine.slice(input.cursor, input.cursor + 1),
+      rawLine.slice(input.cursor + 1)
     )
   }
 
@@ -88,20 +88,20 @@ function prompt (opts) {
 
   function set (line) {
     rawLine = line
-    prompt.cursor = line.length
-    prompt.emit('update')
+    input.cursor = line.length
+    input.emit('update')
   }
 
   function onenter (line) {
     rawLine = ''
-    prompt.cursor = 0
-    prompt.emit('enter', line)
-    prompt.emit('update')
+    input.cursor = 0
+    input.emit('enter', line)
+    input.emit('update')
   }
 
   function onkeypress (ch, key) {
-    if (handle(ch, key)) prompt.emit('update')
-    prompt.emit('keypress', ch, key)
+    if (handle(ch, key)) input.emit('update')
+    input.emit('keypress', ch, key)
   }
 
   function hideCursor () {
