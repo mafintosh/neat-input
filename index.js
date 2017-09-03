@@ -83,6 +83,7 @@ function neatInput (opts) {
   }
 
   function destroy () {
+    input.emit('destroy')
     if (!showCursor) process.stdout.write('\x1B[?25h')
   }
 
