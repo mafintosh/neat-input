@@ -13,6 +13,7 @@ function neatInput (opts) {
 
   if (!showCursor) hideCursor()
 
+  input.destroyed = false
   input.cursor = 0
   input.line = line
   input.rawLine = lineNoStyle
@@ -83,6 +84,7 @@ function neatInput (opts) {
   }
 
   function destroy () {
+    input.destroyed = true
     input.emit('destroy')
     if (!showCursor) process.stdout.write('\x1B[?25h')
   }
