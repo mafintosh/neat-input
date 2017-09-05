@@ -36,6 +36,14 @@ function neatInput (opts) {
     }
 
     switch (key && key.name) {
+      case 'up':
+        input.emit('up')
+        return true
+
+      case 'down':
+        input.emit('down')
+        return true
+
       case 'left':
         input.cursor = Math.max(input.cursor - 1, 0)
         return true

@@ -101,6 +101,14 @@ Emitted when an enter is clicked. Also sets the rawLine to an empty string.
 
 Emitted when tab is clicked
 
+#### `input.on('up')`
+
+Emitted when the up key is clicked
+
+#### `input.on('down')`
+
+Emitted when the down key is clicked
+
 #### `input.on('ctrl-<key>')`
 
 Emitted when ctrl + some key is pressed.
