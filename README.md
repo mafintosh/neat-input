@@ -109,6 +109,14 @@ Emitted when the up key is clicked
 
 Emitted when the down key is clicked
 
+#### `input.on('left')`
+
+Emitted when the left key is clicked
+
+#### `input.on('right')`
+
+Emitted when the right key is clicked
+
 #### `input.on('ctrl-<key>')`
 
 Emitted when ctrl + some key is pressed.

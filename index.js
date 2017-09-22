@@ -46,10 +46,12 @@ function neatInput (opts) {
 
       case 'left':
         input.cursor = Math.max(input.cursor - 1, 0)
+        input.emit('left')
         return true
 
       case 'right':
         input.cursor = Math.min(input.cursor + 1, rawLine.length)
+        input.emit('right')
         return true
 
       case 'backspace':
