@@ -125,7 +125,7 @@ Emitted when the backspace key is clicked
 
 Emitted when page up is clicked
 
-#### `input.on('pagedown')
+#### `input.on('pagedown')`
 
 Emitted when page down is clicked
 
