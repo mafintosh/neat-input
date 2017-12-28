@@ -117,6 +117,18 @@ Emitted when the left key is clicked
 
 Emitted when the right key is clicked
 
+#### `input.on('backspace')`
+
+Emitted when the backspace key is clicked
+
+#### `input.on('pageup')`
+
+Emitted when page up is clicked
+
+#### `input.on('pagedown')
+
+Emitted when page down is clicked
+
 #### `input.on('ctrl-<key>')`
 
 Emitted when ctrl + some key is pressed.

@@ -59,6 +59,14 @@ function neatInput (opts) {
         input.cursor = Math.max(input.cursor - 1, 0)
         return true
 
+      case 'pageup':
+        input.emit('pageup')
+        return true
+
+      case 'pagedown':
+        input.emit('pagedown')
+        return true
+
       default:
         if (ch === '\t') {
           input.emit('tab')
