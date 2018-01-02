@@ -6,6 +6,10 @@ var seconds = 0
 
 diff.pipe(process.stdout)
 
+prompt.on('end', function () {
+  process.exit()
+})
+
 prompt.on('enter', function (line) {
   names.push(line)
 })

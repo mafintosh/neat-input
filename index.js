@@ -10,6 +10,7 @@ function neatInput (opts) {
   var showCursor = !!opts.showCursor
   var input = new events.EventEmitter()
   var rawLine = ''
+  var buf = ''
 
   if (!showCursor) hideCursor()
 
@@ -21,12 +22,32 @@ function neatInput (opts) {
   input.set = set
   input.destroy = destroy
 
-  keypress(process.stdin)
-  process.stdin.setRawMode(true)
-  process.stdin.resume()
-  process.stdin.on('keypress', onkeypress)
+  if (process.stdin.setRawMode) {
+    process.stdin.setRawMode(true)
+    keypress(process.stdin)
+    process.stdin.resume()
+    process.stdin.on('keypress', onkeypress)
+  } else {
+    process.stdin.setEncoding('utf-8')
+    process.stdin.on('data', function (data) {
+      buf += data
+      while (true) {
+        var nl = buf.indexOf('\n')
+        if (nl === -1) return
+        rawLine = buf.slice(0, buf[nl - 1] === '\r' ? nl - 1 : nl)
+        buf = buf.slice(nl + 1)
+        onenter(rawLine)
+      }
+    })
+  }
+
+  process.stdin.on('end', onend)
 
   return input
+
+  function onend () {
+    input.emit('end')
+  }
 
   function handle (ch, key) {
     if (key && key.ctrl) {
