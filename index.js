@@ -55,6 +55,10 @@ function neatInput (opts) {
       input.emit('ctrl-' + key.name)
       return true
     }
+    if (key && key.meta) {
+      input.emit('alt-' + key.name)
+      return true
+    }
 
     switch (key && key.name) {
       case 'up':
