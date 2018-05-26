@@ -135,6 +135,10 @@ Emitted when ctrl + some key is pressed.
 If you do not provide a handler for ctrl-c the process will be exited for you
 on ctrl-c.
 
+#### `input.on('alt-<key>')`
+
+Emitted when alt + some key is pressed.
+
 #### `input.on('keypress', ch, key)`
 
 Forwarded from the keypress module whenever a key is pressed.
