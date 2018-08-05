@@ -125,39 +125,40 @@ test('moving cursor on word boundaries', function (t) {
   t.end()
 })
 
-test('erasing words backwards, alt-backspace', function (t) {
-  var input = neatInput({ stdin: ee })
+test('erasing words backwards, alt-backspace', deleteBackwardsTest({
+  meta: true,
+  name: 'backspace'
+}))
 
-  input.set('ONE TWO THREE')
-  ee.emit('keypress', undefined, { meta: true, name: 'backspace' })
-  t.is(input.rawLine(), 'ONE TWO ', 'THREE gone')
-  t.is(input.cursor, 8, 'cursor at end of TWO ')
-  ee.emit('keypress', undefined, { meta: true, name: 'backspace' })
-  t.is(input.rawLine(), 'ONE ', 'TWO gone')
-  t.is(input.cursor, 4, 'cursor at start of ONE ')
-  ee.emit('keypress', undefined, { meta: true, name: 'backspace' })
-  t.is(input.rawLine(), '', 'ONE gone')
-  t.is(input.cursor, 0, 'cursor at zero')
+test('erasing words backwards, ctrl-w', deleteBackwardsTest({
+  ctrl: true,
+  name: 'w'
+}))
 
-  t.end()
-})
+function deleteBackwardsTest (key) {
+  return function (t) {
+    var input = neatInput({ stdin: ee })
 
-test('erasing words backwards, ctrl-w', function (t) {
-  var input = neatInput({ stdin: ee })
+    input.set('ONE TWO THREE')
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'ONE TWO ', 'THREE gone')
+    t.is(input.cursor, 8, 'cursor at end of TWO ')
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'ONE ', 'TWO gone')
+    t.is(input.cursor, 4, 'cursor at start of ONE ')
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), '', 'ONE gone')
+    t.is(input.cursor, 0, 'cursor at zero')
 
-  input.set('ONE TWO THREE')
-  ee.emit('keypress', undefined, { ctrl: true, name: 'w' })
-  t.is(input.rawLine(), 'ONE TWO ', 'THREE gone')
-  t.is(input.cursor, 8, 'cursor at end of TWO ')
-  ee.emit('keypress', undefined, { ctrl: true, name: 'w' })
-  t.is(input.rawLine(), 'ONE ', 'TWO gone')
-  t.is(input.cursor, 4, 'cursor at start of ONE ')
-  ee.emit('keypress', undefined, { ctrl: true, name: 'w' })
-  t.is(input.rawLine(), '', 'ONE gone')
-  t.is(input.cursor, 0, 'cursor at zero')
+    input.set('ONE TWO  THREE')
+    input.cursor = 9
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'ONE THREE', 'TWO gone')
+    t.is(input.cursor, 4, 'cursor at beginning of THREE')
 
-  t.end()
-})
+    t.end()
+  }
+}
 
 test('erasing words forwards, alt-d', function (t) {
   var input = neatInput({ stdin: ee })
@@ -173,6 +174,12 @@ test('erasing words forwards, alt-d', function (t) {
   ee.emit('keypress', undefined, { meta: true, name: 'd' })
   t.is(input.rawLine(), '', 'THREE gone')
   t.is(input.cursor, 0, 'cursor at zero')
+
+  input.set('ONE  TWO THREE')
+  input.cursor = 3
+  ee.emit('keypress', undefined, { meta: true, name: 'd' })
+  t.is(input.rawLine(), 'ONE THREE', 'TWO gone')
+  t.is(input.cursor, 3, 'cursor unchanged')
 
   t.end()
 })
