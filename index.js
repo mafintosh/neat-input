@@ -183,12 +183,12 @@ function neatInput (opts) {
 
   function deleteWordBackward () {
     var back = util.findWordBeginBackward(rawLine, input.cursor)
-    rawLine = rawLine.substring(0, back) + rawLine.substring(input.cursor)
+    rawLine = rawLine.slice(0, back) + rawLine.slice(input.cursor)
     input.cursor = back
   }
 
   function deleteWordForward () {
     var forward = util.findWordEndForward(rawLine, input.cursor)
-    rawLine = rawLine.substring(0, input.cursor) + rawLine.substring(forward)
+    rawLine = rawLine.slice(0, input.cursor) + rawLine.slice(forward)
   }
 }
