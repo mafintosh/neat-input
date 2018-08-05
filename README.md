@@ -143,6 +143,22 @@ Emitted when alt + some key is pressed.
 
 Forwarded from the keypress module whenever a key is pressed.
 
+## Shortcuts
+
+When typing on the command line, `neat-input` supports the following shortcuts:
+
+* `ctrl-a` move the cursor to the beginning of the line
+* `ctrl-e` move the cursor to the end of the line
+* `ctrl-b` move the cursor one character to the left
+* `ctrl-f` move the cursor one character to the right
+* `ctrl-k` erase all characters to the right of the cursor
+* `ctrl-u` erase the whole line
+* `ctrl-w` erase one word to the left of the cursor
+* `alt-backspace` same as `ctrl-w`
+* `alt-d` erase one word to the right of the cursor
+* `alt-b` move the cursor one word to the left
+* `alt-f` move the cursor one word to the right
+
 ## License
 
 MIT
