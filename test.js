@@ -58,3 +58,12 @@ test('moving cursor to beginning and end of line', function (t) {
   t.is(input.cursor, cursor, 'cursor back at end of line')
   t.end()
 })
+
+test('erasing whole line', function (t) {
+  var input = neatInput({ stdin: ee })
+  input.set('ONE TWO THREE')
+  ee.emit('keypress', undefined, { ctrl: true, name: 'u' })
+  t.is(input.cursor, 0, 'cursor at the start of line')
+  t.is(input.rawLine(), '', 'empty line')
+  t.end()
+})
