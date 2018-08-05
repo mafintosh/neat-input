@@ -47,3 +47,14 @@ test('backspace', function (t) {
 
   t.end()
 })
+
+test('moving cursor to beginning and end of line', function (t) {
+  var input = neatInput({ stdin: ee })
+  input.set('ONE')
+  var cursor = input.cursor
+  ee.emit('keypress', undefined, { ctrl: true, name: 'a' })
+  t.is(input.cursor, 0, 'cursor at the start of line')
+  ee.emit('keypress', undefined, { ctrl: true, name: 'e' })
+  t.is(input.cursor, cursor, 'cursor back at end of line')
+  t.end()
+})
