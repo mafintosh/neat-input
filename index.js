@@ -53,9 +53,12 @@ function neatInput (opts) {
   function handle (ch, key) {
     if (key && key.ctrl) {
       if (key.name === 'c' && !input.emit('ctrl-c')) process.exit()
+      if (key.name === 'b') moveCursorLeft()
+      if (key.name === 'f') moveCursorRight()
       input.emit('ctrl-' + key.name)
       return true
     }
+
     if (key && key.meta) {
       input.emit('alt-' + key.name)
       return true
@@ -71,18 +74,18 @@ function neatInput (opts) {
         return true
 
       case 'left':
-        input.cursor = Math.max(input.cursor - 1, 0)
+        moveCursorLeft()
         input.emit('left')
         return true
 
       case 'right':
-        input.cursor = Math.min(input.cursor + 1, rawLine.length)
+        moveCursorRight()
         input.emit('right')
         return true
 
       case 'backspace':
         rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
-        input.cursor = Math.max(input.cursor - 1, 0)
+        moveCursorLeft()
         return true
 
       case 'pageup':
@@ -112,6 +115,14 @@ function neatInput (opts) {
     }
 
     return false
+  }
+
+  function moveCursorLeft () {
+    input.cursor = Math.max(input.cursor - 1, 0)
+  }
+
+  function moveCursorRight () {
+    input.cursor = Math.min(input.cursor + 1, rawLine.length)
   }
 
   function lineNoStyle () {
