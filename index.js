@@ -1,5 +1,6 @@
 var events = require('events')
 var keypress = require('keypress')
+var util = require('./util')
 
 module.exports = neatInput
 
@@ -58,12 +59,22 @@ function neatInput (opts) {
       else if (key.name === 'a') input.cursor = 0
       else if (key.name === 'e') input.cursor = rawLine.length
       else if (key.name === 'u') set('')
+      else if (key.name === 'w') deleteWordBackward()
       input.emit('ctrl-' + key.name)
       return true
     }
 
     if (key && key.meta) {
       input.emit('alt-' + key.name)
+      if (key.name === 'b') {
+        input.cursor = util.findWordBeginBackward(rawLine, input.cursor)
+      } else if (key.name === 'f') {
+        input.cursor = util.findWordEndForward(rawLine, input.cursor)
+      } else if (key.name === 'backspace') {
+        deleteWordBackward()
+      } else if (key.name === 'd') {
+        deleteWordForward()
+      }
       return true
     }
 
@@ -168,5 +179,16 @@ function neatInput (opts) {
   function hideCursor () {
     process.stdout.write('\x1B[?25l')
     process.on('exit', destroy)
+  }
+
+  function deleteWordBackward () {
+    var back = util.findWordBeginBackward(rawLine, input.cursor)
+    rawLine = rawLine.substring(0, back) + rawLine.substring(input.cursor)
+    input.cursor = back
+  }
+
+  function deleteWordForward () {
+    var forward = util.findWordEndForward(rawLine, input.cursor)
+    rawLine = rawLine.substring(0, input.cursor) + rawLine.substring(forward)
   }
 }
