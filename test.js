@@ -7,7 +7,7 @@ var ee = new EventEmitter()
 ee.setRawMode = function () {}
 ee.resume = function () {}
 
-test('moving cursor left and right', function (t) {
+test('moving cursor left/right, ctrl-b/ctrl-f', function (t) {
   var input = neatInput({ stdin: ee })
   input.set('ONE')
   var cursor = input.cursor
@@ -49,7 +49,7 @@ test('backspace', function (t) {
   t.end()
 })
 
-test('moving cursor to beginning and end of line', function (t) {
+test('moving cursor to beginning/end of line, ctrl-a/ctrl-e', function (t) {
   var input = neatInput({ stdin: ee })
   input.set('ONE')
   var cursor = input.cursor
@@ -60,7 +60,7 @@ test('moving cursor to beginning and end of line', function (t) {
   t.end()
 })
 
-test('erasing whole line', function (t) {
+test('erasing whole line, ctrl-u', function (t) {
   var input = neatInput({ stdin: ee })
   input.set('ONE TWO THREE')
   ee.emit('keypress', undefined, { ctrl: true, name: 'u' })
@@ -180,6 +180,18 @@ test('erasing words forwards, alt-d', function (t) {
   ee.emit('keypress', undefined, { meta: true, name: 'd' })
   t.is(input.rawLine(), 'ONE THREE', 'TWO gone')
   t.is(input.cursor, 3, 'cursor unchanged')
+
+  t.end()
+})
+
+test('erasing all to the right of cursor, ctrl-k', function (t) {
+  var input = neatInput({ stdin: ee })
+
+  input.set('ONE TWO THREE FOUR')
+  input.cursor = 7
+  ee.emit('keypress', undefined, { ctrl: true, name: 'k' })
+  t.is(input.rawLine(), 'ONE TWO', 'THREE and FOUR gone')
+  t.is(input.cursor, 7, 'cursor unchanged')
 
   t.end()
 })
