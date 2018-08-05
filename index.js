@@ -11,6 +11,7 @@ function neatInput (opts) {
   var input = new events.EventEmitter()
   var rawLine = ''
   var buf = ''
+  var stdin = opts.stdin || process.stdin
 
   if (!showCursor) hideCursor()
 
@@ -22,14 +23,14 @@ function neatInput (opts) {
   input.set = set
   input.destroy = destroy
 
-  if (process.stdin.setRawMode) {
-    process.stdin.setRawMode(true)
-    keypress(process.stdin)
-    process.stdin.resume()
-    process.stdin.on('keypress', onkeypress)
+  if (stdin.setRawMode) {
+    stdin.setRawMode(true)
+    keypress(stdin)
+    stdin.resume()
+    stdin.on('keypress', onkeypress)
   } else {
-    process.stdin.setEncoding('utf-8')
-    process.stdin.on('data', function (data) {
+    stdin.setEncoding('utf-8')
+    stdin.on('data', function (data) {
       buf += data
       while (true) {
         var nl = buf.indexOf('\n')
@@ -41,7 +42,7 @@ function neatInput (opts) {
     })
   }
 
-  process.stdin.on('end', onend)
+  stdin.on('end', onend)
 
   return input
 

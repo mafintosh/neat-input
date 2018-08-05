@@ -4,14 +4,15 @@
   "description": "A diff friendly cli input module. Made for usage with neat-log and ansi-diff-stream",
   "main": "index.js",
   "scripts": {
-    "test": "standard"
+    "test": "standard && node test.js"
   },
   "dependencies": {
     "keypress": "^0.2.1"
   },
   "devDependencies": {
     "ansi-diff-stream": "^1.2.0",
-    "standard": "^11.0.1"
+    "standard": "^11.0.1",
+    "tape": "^4.9.1"
   },
   "repository": {
     "type": "git",
