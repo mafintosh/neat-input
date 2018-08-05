@@ -54,7 +54,9 @@ function neatInput (opts) {
     if (key && key.ctrl) {
       if (key.name === 'c' && !input.emit('ctrl-c')) process.exit()
       if (key.name === 'b') moveCursorLeft()
-      if (key.name === 'f') moveCursorRight()
+      else if (key.name === 'f') moveCursorRight()
+      else if (key.name === 'a') input.cursor = 0
+      else if (key.name === 'e') input.cursor = rawLine.length
       input.emit('ctrl-' + key.name)
       return true
     }
