@@ -60,6 +60,7 @@ function neatInput (opts) {
       else if (key.name === 'e') input.cursor = rawLine.length
       else if (key.name === 'u') set('')
       else if (key.name === 'w') deleteWordBackward()
+      else if (key.name === 'k') rawLine = rawLine.slice(0, input.cursor)
       input.emit('ctrl-' + key.name)
       return true
     }
