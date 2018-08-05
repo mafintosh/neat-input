@@ -159,7 +159,7 @@ test('erasing words backwards, ctrl-w', function (t) {
   t.end()
 })
 
-test('erasing words backwards, alt-d', function (t) {
+test('erasing words forwards, alt-d', function (t) {
   var input = neatInput({ stdin: ee })
 
   input.set('ONE TWO THREE')
