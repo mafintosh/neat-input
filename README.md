@@ -2,6 +2,8 @@
 
 A diff friendly cli input module. Made for usage with neat-log and ansi-diff-stream
 
+[![Build Status](https://travis-ci.org/mafintosh/neat-input.svg?branch=master)](https://travis-ci.org/mafintosh/neat-input)
+
 ```
 npm install neat-input
 ```
