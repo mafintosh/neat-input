@@ -1,5 +1,6 @@
 var events = require('events')
 var keypress = require('keypress')
+var util = require('./util')
 
 module.exports = neatInput
 
@@ -11,6 +12,7 @@ function neatInput (opts) {
   var input = new events.EventEmitter()
   var rawLine = ''
   var buf = ''
+  var stdin = opts.stdin || process.stdin
 
   if (!showCursor) hideCursor()
 
@@ -22,14 +24,14 @@ function neatInput (opts) {
   input.set = set
   input.destroy = destroy
 
-  if (process.stdin.setRawMode) {
-    process.stdin.setRawMode(true)
-    keypress(process.stdin)
-    process.stdin.resume()
-    process.stdin.on('keypress', onkeypress)
+  if (stdin.setRawMode) {
+    stdin.setRawMode(true)
+    keypress(stdin)
+    stdin.resume()
+    stdin.on('keypress', onkeypress)
   } else {
-    process.stdin.setEncoding('utf-8')
-    process.stdin.on('data', function (data) {
+    stdin.setEncoding('utf-8')
+    stdin.on('data', function (data) {
       buf += data
       while (true) {
         var nl = buf.indexOf('\n')
@@ -41,7 +43,7 @@ function neatInput (opts) {
     })
   }
 
-  process.stdin.on('end', onend)
+  stdin.on('end', onend)
 
   return input
 
@@ -52,11 +54,28 @@ function neatInput (opts) {
   function handle (ch, key) {
     if (key && key.ctrl) {
       if (key.name === 'c' && !input.emit('ctrl-c')) process.exit()
+      if (key.name === 'b') moveCursorLeft()
+      else if (key.name === 'f') moveCursorRight()
+      else if (key.name === 'a') input.cursor = 0
+      else if (key.name === 'e') input.cursor = rawLine.length
+      else if (key.name === 'u') set('')
+      else if (key.name === 'w') deleteWordBackward()
+      else if (key.name === 'k') rawLine = rawLine.slice(0, input.cursor)
       input.emit('ctrl-' + key.name)
       return true
     }
+
     if (key && key.meta) {
       input.emit('alt-' + key.name)
+      if (key.name === 'b') {
+        input.cursor = util.findWordBeginBackward(rawLine, input.cursor)
+      } else if (key.name === 'f') {
+        input.cursor = util.findWordEndForward(rawLine, input.cursor)
+      } else if (key.name === 'backspace') {
+        deleteWordBackward()
+      } else if (key.name === 'd') {
+        deleteWordForward()
+      }
       return true
     }
 
@@ -70,18 +89,18 @@ function neatInput (opts) {
         return true
 
       case 'left':
-        input.cursor = Math.max(input.cursor - 1, 0)
+        moveCursorLeft()
         input.emit('left')
         return true
 
       case 'right':
-        input.cursor = Math.min(input.cursor + 1, rawLine.length)
+        moveCursorRight()
         input.emit('right')
         return true
 
       case 'backspace':
         rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
-        input.cursor = Math.max(input.cursor - 1, 0)
+        moveCursorLeft()
         return true
 
       case 'pageup':
@@ -111,6 +130,14 @@ function neatInput (opts) {
     }
 
     return false
+  }
+
+  function moveCursorLeft () {
+    input.cursor = Math.max(input.cursor - 1, 0)
+  }
+
+  function moveCursorRight () {
+    input.cursor = Math.min(input.cursor + 1, rawLine.length)
   }
 
   function lineNoStyle () {
@@ -153,5 +180,16 @@ function neatInput (opts) {
   function hideCursor () {
     process.stdout.write('\x1B[?25l')
     process.on('exit', destroy)
+  }
+
+  function deleteWordBackward () {
+    var back = util.findWordBeginBackward(rawLine, input.cursor)
+    rawLine = rawLine.slice(0, back) + rawLine.slice(input.cursor)
+    input.cursor = back
+  }
+
+  function deleteWordForward () {
+    var forward = util.findWordEndForward(rawLine, input.cursor)
+    rawLine = rawLine.slice(0, input.cursor) + rawLine.slice(forward)
   }
 }
