@@ -119,6 +119,10 @@ Emitted when the left key is clicked
 
 Emitted when the right key is clicked
 
+#### `input.on('space')`
+
+Emitted when the space key is clicked
+
 #### `input.on('backspace')`
 
 Emitted when the backspace key is clicked
