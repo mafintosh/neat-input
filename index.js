@@ -101,6 +101,7 @@ function neatInput (opts) {
       case 'backspace':
         rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
         moveCursorLeft()
+        input.emit('backspace')
         return true
 
       case 'pageup':
