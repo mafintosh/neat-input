@@ -98,6 +98,10 @@ function neatInput (opts) {
         input.emit('right')
         return true
 
+      case 'space':
+        input.emit('space')
+        return true
+
       case 'backspace':
         rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
         moveCursorLeft()
