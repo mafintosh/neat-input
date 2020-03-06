@@ -59,6 +59,7 @@ function neatInput (opts) {
       else if (key.name === 'a') input.cursor = 0
       else if (key.name === 'e') input.cursor = rawLine.length
       else if (key.name === 'u') set('')
+      else if (key.name === 'd') deleteChar()
       else if (key.name === 'w') deleteWordBackward()
       else if (key.name === 'k') rawLine = rawLine.slice(0, input.cursor)
       input.emit('ctrl-' + key.name)
@@ -96,6 +97,11 @@ function neatInput (opts) {
       case 'right':
         moveCursorRight()
         input.emit('right')
+        return true
+
+      case 'delete':
+        deleteChar()
+        input.emit('delete')
         return true
 
       case 'backspace':
@@ -185,6 +191,12 @@ function neatInput (opts) {
   function hideCursor () {
     process.stdout.write('\x1B[?25l')
     process.on('exit', destroy)
+  }
+
+  function deleteChar () {
+    if (rawLine.length > 0 && input.cursor < rawLine.length) {
+      rawLine = rawLine.slice(0, input.cursor) + rawLine.slice(input.cursor + 1)
+    }
   }
 
   function deleteWordBackward () {

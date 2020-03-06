@@ -22,6 +22,62 @@ test('moving cursor left/right, ctrl-b/ctrl-f', function (t) {
   t.end()
 })
 
+test('delete char, delete key', deleteCharTest({
+  name: 'delete'
+}))
+
+test('delete char, ctrl-d', deleteCharTest({
+  ctrl: true,
+  name: 'd'
+}))
+
+function deleteCharTest (key) {
+  return function (t) {
+    var input = neatInput({ stdin: ee })
+
+    input.set('')
+    var cursor = input.cursor
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), '', 'no change')
+    t.is(input.cursor, cursor, 'cursor still at end of line')
+
+    input.set('ONE')
+    cursor = input.cursor
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'ONE', 'no change')
+    t.is(input.cursor, cursor, 'cursor still at end of line')
+
+    input.set('ONE')
+    cursor = input.cursor
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'ON', 'E is gone')
+    t.is(input.cursor, cursor - 1, 'cursor moved left')
+
+    input.set('ONE')
+    cursor = input.cursor
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), 'NE', 'O is gone')
+    t.is(input.cursor, cursor - 3, 'cursor moved left thrice')
+
+    input.set('ONE')
+    cursor = input.cursor
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, { name: 'left' })
+    ee.emit('keypress', undefined, key)
+    ee.emit('keypress', undefined, key)
+    ee.emit('keypress', undefined, key)
+    t.is(input.rawLine(), '', 'ONE is gone')
+    t.is(input.cursor, cursor - 3, 'cursor moved left thrice')
+
+    t.end()
+  }
+}
+
 test('backspace', function (t) {
   var input = neatInput({ stdin: ee })
 
