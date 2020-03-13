@@ -22,6 +22,7 @@ function neatInput (opts) {
   input.rawLine = lineNoStyle
   input.enter = onenter
   input.set = set
+  input.setRaw = setRaw
   input.destroy = destroy
 
   if (stdin.setRawMode) {
@@ -105,9 +106,16 @@ function neatInput (opts) {
         return true
 
       case 'backspace':
-        rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
+        var origCursor = input.cursor
+        var backCursor = Math.max(input.cursor - 1, 0)
+        rawLine = rawLine.slice(0, backCursor) + rawLine.slice(input.cursor)
         moveCursorLeft()
-        input.emit('backspace')
+        input.emit(
+          'backspace',
+          rawLine.slice(backCursor, input.cursor),
+          origCursor,
+          backCursor
+        )
         return true
 
       case 'pageup':
@@ -134,8 +142,11 @@ function neatInput (opts) {
         }
 
         if (ch) {
-          rawLine = rawLine.slice(0, input.cursor) + ch + rawLine.slice(input.cursor)
+          var origCursor = input.cursor
+          rawLine =
+            rawLine.slice(0, input.cursor) + ch + rawLine.slice(input.cursor)
           input.cursor += ch.length
+          input.emit('insertChar', ch, origCursor)
           return true
         }
     }
@@ -176,10 +187,14 @@ function neatInput (opts) {
     input.emit('update')
   }
 
-  function onenter (line) {
+  function setRaw(raw) {
+    rawLine = raw
+  }
+
+  function onenter(line) {
     rawLine = ''
+    input.emit('enter', line, input.cursor)
     input.cursor = 0
-    input.emit('enter', line)
     input.emit('update')
   }
 
@@ -201,12 +216,24 @@ function neatInput (opts) {
 
   function deleteWordBackward () {
     var back = util.findWordBeginBackward(rawLine, input.cursor)
+    input.emit(
+      'deleteWordBackward',
+      rawLine.slice(back, input.cursor),
+      input.cursor,
+      back
+    )
     rawLine = rawLine.slice(0, back) + rawLine.slice(input.cursor)
     input.cursor = back
   }
 
   function deleteWordForward () {
     var forward = util.findWordEndForward(rawLine, input.cursor)
+    input.emit(
+      'deleteWordForward',
+      rawLine.slice(input.cursor, forward),
+      input.cursor,
+      forward
+    )
     rawLine = rawLine.slice(0, input.cursor) + rawLine.slice(forward)
   }
 }
