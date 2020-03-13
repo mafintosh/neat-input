@@ -178,8 +178,8 @@ function neatInput (opts) {
   }
 
   function onkeypress (ch, key) {
-    if (handle(ch, key)) input.emit('update')
     input.emit('keypress', ch, key)
+    if (handle(ch, key)) input.emit('update')
   }
 
   function hideCursor () {
