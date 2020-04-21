@@ -52,6 +52,8 @@ function neatInput (opts) {
   }
 
   function handle (ch, key) {
+    var shift = key && key.shift ? 'shift-' : ''
+
     if (key && key.ctrl) {
       if (key.name === 'c' && !input.emit('ctrl-c')) process.exit()
       if (key.name === 'b') moveCursorLeft()
@@ -62,12 +64,12 @@ function neatInput (opts) {
       else if (key.name === 'd') deleteChar()
       else if (key.name === 'w') deleteWordBackward()
       else if (key.name === 'k') rawLine = rawLine.slice(0, input.cursor)
-      input.emit('ctrl-' + key.name)
+      input.emit('ctrl-' + shift + key.name)
       return true
     }
 
     if (key && key.meta) {
-      input.emit('alt-' + key.name)
+      input.emit('alt-' + shift + key.name)
       if (key.name === 'b') {
         input.cursor = util.findWordBeginBackward(rawLine, input.cursor)
       } else if (key.name === 'f') {
@@ -82,45 +84,45 @@ function neatInput (opts) {
 
     switch (key && key.name) {
       case 'up':
-        input.emit('up')
+        input.emit(shift + 'up')
         return true
 
       case 'down':
-        input.emit('down')
+        input.emit(shift + 'down')
         return true
 
       case 'left':
         moveCursorLeft()
-        input.emit('left')
+        input.emit(shift + 'left')
         return true
 
       case 'right':
         moveCursorRight()
-        input.emit('right')
+        input.emit(shift + 'right')
         return true
 
       case 'delete':
         deleteChar()
-        input.emit('delete')
+        input.emit(shift + 'delete')
         return true
 
       case 'backspace':
         rawLine = rawLine.slice(0, Math.max(input.cursor - 1, 0)) + rawLine.slice(input.cursor)
         moveCursorLeft()
-        input.emit('backspace')
+        input.emit(shift + 'backspace')
         return true
 
       case 'pageup':
-        input.emit('pageup')
+        input.emit(shift + 'pageup')
         return true
 
       case 'pagedown':
-        input.emit('pagedown')
+        input.emit(shift + 'pagedown')
         return true
 
       default:
         if (ch === '\t') {
-          input.emit('tab')
+          input.emit(shift + 'tab')
           return true
         }
 
@@ -130,7 +132,7 @@ function neatInput (opts) {
         }
 
         if (ch === ' ') {
-          input.emit('space')
+          input.emit(shift + 'space')
         }
 
         if (ch) {
@@ -184,8 +186,8 @@ function neatInput (opts) {
   }
 
   function onkeypress (ch, key) {
-    if (handle(ch, key)) input.emit('update')
     input.emit('keypress', ch, key)
+    if (handle(ch, key)) input.emit('update')
   }
 
   function hideCursor () {
