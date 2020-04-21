@@ -145,6 +145,10 @@ on ctrl-c.
 
 Emitted when alt + some key is pressed.
 
+#### `input.on('shift-<key>')`
+
+Emitted when shift + some control key is pressed.
+
 #### `input.on('keypress', ch, key)`
 
 Forwarded from the keypress module whenever a key is pressed.
