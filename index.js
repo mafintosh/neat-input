@@ -82,7 +82,6 @@ function neatInput (opts) {
       return true
     }
 
-
     switch (key && key.name) {
       case 'up':
         input.emit(shift + 'up')
